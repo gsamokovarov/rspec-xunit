@@ -4,7 +4,7 @@ require 'test_helper'
 
 RSpec.case RSpec::XUnit::Assertions do
   test 'assert_truthy' do
-    assert_truthy false
+    assert_truthy true
   end
 
   test 'assert_falsy' do
@@ -25,6 +25,12 @@ RSpec.case RSpec::XUnit::Assertions do
 
   test 'assert_between' do
     assert_between 1, 0, 3
+  end
+
+  test 'assert_satisfy' do
+    assert_satisfy 5 do |n|
+      n > 4
+    end
   end
 
   test 'assert_raises' do

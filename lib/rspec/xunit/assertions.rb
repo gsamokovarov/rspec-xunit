@@ -14,9 +14,9 @@ module RSpec
         #
         # `expect(action).to eq(expected)`
         def assertion_match(matcher, suffix = guess_assertion_suffix(matcher))
-          define_method "assert_#{suffix}" do |value, *args|
+          define_method "assert_#{suffix}" do |value, *args, &block|
             begin
-              expect(value).to send(matcher, *args)
+              expect(value).to send(matcher, *args, &block)
             rescue Expectations::ExpectationNotMetError => e
               raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
             end
@@ -54,17 +54,35 @@ module RSpec
       assertion_match :be_truthy
       assertion_match :be_falsy
       assertion_match :be_nil
-      assertion_match :eq
       assertion_match :be
       assertion_match :be_a, :is_a
       assertion_match :be_kind_of
       assertion_match :be_instance_of
       assertion_match :be_between
       assertion_match :be_within
+      assertion_match :contain_exactly
+      assertion_match :cover
+      assertion_match :end_with
+      assertion_match :eq
+      assertion_match :eql
+      assertion_match :exist
+      assertion_match :have_attributes
+      assertion_match :include
+      assertion_match :all
+      assertion_match :match
+      assertion_match :match_array
+      assertion_match :respond_to
+      assertion_match :satisfy
+      assertion_match :start_with
+      assertion_match :throw_symbol, :throw
+      assertion_match :yield_control
+      assertion_match :yield_with_no_args
+      assertion_match :yield_successive_args
 
+      assertion_match_block :change
       assertion_match_block :raise_error, :raise
       assertion_match_block :raise_error, :raises
-      assertion_match_block :change
+      assertion_match_block :output
 
       def assert(value = Expectations::ExpectationTarget::UndefinedValue, &block)
         Expectations::ExpectationTarget.for(value, block)
