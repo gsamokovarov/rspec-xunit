@@ -18,7 +18,7 @@ module RSpec
             begin
               expect(value).to send(matcher, *args)
             rescue Expectations::ExpectationNotMetError => e
-              raise e, e.message, adjust_for_better_failure_message(e.backtrace)
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
             end
           end
         end
@@ -35,7 +35,7 @@ module RSpec
             begin
               expect(&block).to send(matcher, *args)
             rescue Expectations::ExpectationNotMetError => e
-              raise e, e.message, adjust_for_better_failure_message(e.backtrace)
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
             end
           end
         end

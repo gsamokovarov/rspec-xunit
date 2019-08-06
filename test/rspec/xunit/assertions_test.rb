@@ -4,7 +4,7 @@ require 'test_helper'
 
 RSpec.case RSpec::XUnit::Assertions do
   test 'assert_truthy' do
-    assert_truthy true
+    assert_truthy false
   end
 
   test 'assert_falsy' do
