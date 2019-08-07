@@ -1,4 +1,4 @@
-The RSpec you know and love, without the BDD nonsense.
+The RSpec you know and love with xUnit syntax.
 
 ## BDD
 
@@ -77,9 +77,9 @@ this in your `.rspec` file:
 The syntax offered by `rspec-xunit` should be familiar to xUnit testing
 framework users like `minitest`.
 
-You start a test case by `RSpec.case`. This is simple alias of
+You start a test case by `RSpec.case`. This is a simple alias of
 `Rspec.describe`. You define individual tests (what you call examples in your
-past life) with the `test` macro. It is an alias of `it` and it support all
+past life) with the `test` macro. It is an alias of `it` and it supports all
 it's goodies, like skipping a test with `xtest`.
 
 This leaves us to at the most important change in `rspec-xunit`... You no
@@ -111,9 +111,9 @@ test "user cannot be found" do
 end
 ```
 
-The assertions provided by `rspex-xunit` follow the pattern `assert_:matcher`,
+The assertions provided by `rspec-xunit` follow the pattern `assert_:matcher`,
 where `:matcher` is a name of standard RSpec matcher. This way, every matcher
-you expect from RSpec is already available in `rspex-xunit`. 🎉
+you expect from RSpec is already available in `rspec-xunit`. 🎉
 
 We even support block matchers like:
 
@@ -136,7 +136,7 @@ end
 ```
 
 We have the aliases of `assert_raise` and `assert_raises` to
-`assert_raise_error` for that extra bitter sweet xUnit feel. 🤤
+`assert_raise_error` for that extra bittersweet xUnit feel. 🤤
 
 Some block-level assertions, though are hard to convert. Take this example,
 for example 😉:
@@ -166,7 +166,7 @@ test "user authentication" do
 end
 ```
 
-This looks suspiciously like `expect`, because it is its alias! 🙄 Sometimes
+This looks suspiciously like `expect` because it is its alias! 🙄 Sometimes
 you just gotta `expect`, I mean `assert`, you know!
 
 Have you noticed the `assert_valid? login` line? We call it an assertion
