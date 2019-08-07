@@ -52,4 +52,10 @@ RSpec.case RSpec::XUnit::Assertions do
 
     assert { array << 1 }.to change { array.count }
   end
+
+  test 'assert predicates' do
+    array = []
+
+    assert_empty? array
+  end
 end

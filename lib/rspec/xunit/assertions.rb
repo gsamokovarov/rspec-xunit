@@ -94,7 +94,10 @@ module RSpec
 
       def method_missing(method, *args, &block)
         ASSERTION_PREDICATE_REGEX.match(method.to_s) do |match|
-          expect(args.shift).to BuiltIn::BePredicate.new(match[1], *args, &block)
+          value = args.shift
+          matcher = "be_#{match[1]}"
+
+          expect(value).to Matchers::BuiltIn::BePredicate.new(matcher, *args, &block)
         end || super
       end
 
