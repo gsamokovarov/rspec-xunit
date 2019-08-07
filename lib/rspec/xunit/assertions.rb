@@ -65,6 +65,7 @@ module RSpec
       assertion_match :cover
       assertion_match :end_with
       assertion_match :eq
+      assertion_match :equal
       assertion_match :eql
       assertion_match :exist
       assertion_match :have_attributes
