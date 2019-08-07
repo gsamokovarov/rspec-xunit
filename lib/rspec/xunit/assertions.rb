@@ -55,6 +55,7 @@ module RSpec
       assertion_match :be_falsy
       assertion_match :be_nil
       assertion_match :be
+      assertion_match :be_a
       assertion_match :be_a, :is_a
       assertion_match :be_kind_of
       assertion_match :be_instance_of
@@ -74,12 +75,14 @@ module RSpec
       assertion_match :respond_to
       assertion_match :satisfy
       assertion_match :start_with
+      assertion_match :throw_symbol
       assertion_match :throw_symbol, :throw
       assertion_match :yield_control
       assertion_match :yield_with_no_args
       assertion_match :yield_successive_args
 
       assertion_match_block :change
+      assertion_match_block :raise_error
       assertion_match_block :raise_error, :raise
       assertion_match_block :raise_error, :raises
       assertion_match_block :output
