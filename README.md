@@ -33,7 +33,7 @@ end
 require "test_helper"
 
 RSpec.case Next::LoginForm do
-  test "user can not be found" do
+  test "user cannot be found" do
     login = Next::LoginForm.submit email: "oh@no.com", password: ":("
 
     assert_invalid? login
@@ -103,7 +103,7 @@ part of it is a **matcher**. For every RSpec matcher, we have a corresponding
 **assertion**. This is how we can rewrite the example above as a test:
 
 ```ruby
-test "user can not be found" do
+test "user cannot be found" do
   login = Next::LoginForm.submit email: "oh@no.com", password: ":("
 
   assert_invalid? login
