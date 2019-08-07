@@ -174,5 +174,5 @@ predicate! Every assertion ending in a question-mark invokes that predicate
 method on the asserted object.
 
 ```ruby
-assert_empty? you_can_do_that_to_every_object_responding_to_empty?
+assert_empty? object_responding_to_empty_question_mark
 ```
