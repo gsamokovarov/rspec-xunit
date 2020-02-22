@@ -17,6 +17,7 @@ RSpec.case RSpec::XUnit::Assertions do
 
   test 'assert_eq' do
     assert_eq true, true
+    assert_not_eq true, false
   end
 
   test 'assert_be' do
@@ -44,6 +45,10 @@ RSpec.case RSpec::XUnit::Assertions do
 
     assert_change array, :count do
       array << 1
+    end
+
+    assert_not_change array, :count do
+      array[0] = 2
     end
   end
 

@@ -9,14 +9,22 @@ module RSpec
         # Assertion match converts RSpec matchers into an XUnit friendly
         # assertions.
         #
-        # For example: `assertion_match :eq` will create an `assert_eq` method
-        # behaving in the same way as:
+        # For example, `assertion_match :eq` will create two methods:
         #
-        # `expect(action).to eq(expected)`
+        # - `assert_eq` roughly `expect(action).to eq(expected)`
+        # - `assert_not_eq` roughly `expect(action).to_not eq(expected)`
         def assertion_match(matcher, suffix = guess_assertion_suffix(matcher))
           define_method "assert_#{suffix}" do |value, *args, &block|
             begin
               expect(value).to send(matcher, *args, &block)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
+          end
+
+          define_method "assert_not_#{suffix}" do |value, *args, &block|
+            begin
+              expect(value).to_not send(matcher, *args, &block)
             rescue Expectations::ExpectationNotMetError => e
               raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
             end
@@ -26,14 +34,23 @@ module RSpec
         # Assertion match block converts RSpec block matchers into XUnit
         # friendly assertions.
         #
-        # For example: `assertion_match_block :raises, :raise_error` will
-        # create an `assert_raises` method behaving in the same way as:
+        # For example, `assertion_match_block :raises, :raise_error` will
+        # generate two methods:
         #
-        # `expect { bloc }.to raise_error`
+        # - `assert_raises` roughly `expect { bloc }.to raise_error`
+        # - `assert_not_raises` roughly `expect { bloc }.to_not raise_error`
         def assertion_match_block(matcher, suffix = guess_assertion_suffix(matcher))
           define_method "assert_#{suffix}" do |*args, &block|
             begin
               expect(&block).to send(matcher, *args)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
+          end
+
+          define_method "assert_not_#{suffix}" do |*args, &block|
+            begin
+              expect(&block).to_not send(matcher, *args)
             rescue Expectations::ExpectationNotMetError => e
               raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
             end
