@@ -138,7 +138,7 @@ end
 We have the aliases of `assert_raise` and `assert_raises` to
 `assert_raise_error` for that extra bittersweet xUnit feel. 🤤
 
-Some block-level assertions, though are hard to convert. Take this example,
+Some block-level assertions are hard to convert. Take this example,
 for example 😉:
 
 ```ruby
@@ -176,3 +176,8 @@ method on the asserted object.
 ```ruby
 assert_empty? object_responding_to_empty_question_mark
 ```
+
+### Stubs & Mocks
+
+To write stubs and mocks in xUnit fashion, use `stub` instead of `allow` and
+`mock` instead of `expect`. Everything else is the same.
