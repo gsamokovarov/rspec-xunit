@@ -13,7 +13,7 @@ module RSpec
         #
         # - `assert_eq` roughly `expect(action).to eq(expected)`
         # - `assert_not_eq` roughly `expect(action).to_not eq(expected)`
-        def assertion_match(matcher, suffix = guess_assertion_suffix(matcher))
+        def assertion_match(matcher, suffix = matcher)
           define_method "assert_#{suffix}" do |value, *args, &block|
             begin
               expect(value).to send(matcher, *args, &block)
@@ -39,7 +39,7 @@ module RSpec
         #
         # - `assert_raises` roughly `expect { bloc }.to raise_error`
         # - `assert_not_raises` roughly `expect { bloc }.to_not raise_error`
-        def assertion_match_block(matcher, suffix = guess_assertion_suffix(matcher))
+        def assertion_match_block(matcher, suffix = matcher)
           define_method "assert_#{suffix}" do |*args, &block|
             begin
               expect(&block).to send(matcher, *args)
@@ -56,33 +56,23 @@ module RSpec
             end
           end
         end
-
-        private
-
-        MATCHER_CRUFT_REGEX = /((?:be_)|(?:have_))(.*)/.freeze
-
-        def guess_assertion_suffix(matcher_name)
-          MATCHER_CRUFT_REGEX.match(matcher_name) do |match|
-            match[2]
-          end || matcher_name
-        end
       end
 
-      assertion_match :be_a
+      # Useful aliaises.
+      assertion_match :be_truthy, :truthy
+      assertion_match :be_falsy, :falsy
+      assertion_match :be_nil, :nil
       assertion_match :be_a, :is_a
-      assertion_match :be_kind_of
-      assertion_match :be_instance_of
-      assertion_match :be_between
-      assertion_match :be_within
-      assertion_match :be_truthy
-      assertion_match :be_falsy
-      assertion_match :be_nil
+      assertion_match :be_kind_of, :kind_of
+      assertion_match :be_instance_of, :instance_of
+      assertion_match :be_between, :between
+      assertion_match :be_within, :within
 
-      assertion_match_block :change
-      assertion_match_block :raise_error
       assertion_match_block :raise_error, :raise
       assertion_match_block :raise_error, :raises
-      assertion_match_block :output
+
+      # Exceptions to the block matcher rule.
+      assertion_match :satisfy
 
       # Assert is an alias to `expect`. Use it when all else fails or doesn't
       # feel right. The `change` assertion with a block is a good example:
@@ -108,11 +98,17 @@ module RSpec
         end
 
         return if ASSERTION_REGEX.match(method.to_s) do |match|
+          matcher = match[1]
+
           RSpec::XUnit::Assertions.module_eval do
-            assertion_match match[1]
+            if block.nil?
+              assertion_match matcher
+            else
+              assertion_match_block matcher
+            end
           end
 
-          send("assert_#{match[1]}", *args, &block)
+          send "assert_#{match[1]}", *args, &block
         end
 
         super
