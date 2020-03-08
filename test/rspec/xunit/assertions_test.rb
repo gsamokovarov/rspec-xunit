@@ -55,7 +55,7 @@ RSpec.case RSpec::XUnit::Assertions do
   test 'assert fall-back' do
     array = []
 
-    assert { array << 1 }.to change { array.count }
+    assert! { array << 1 }.to change { array.count }
   end
 
   test 'assert predicates' do

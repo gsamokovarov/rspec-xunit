@@ -154,13 +154,13 @@ end
 ```
 
 We cannot translate `change { Session.count }.by(1)` to a nice assertion. This
-is where the `assert` fall-back comes in:
+is where the `assert!` fall-back comes in:
 
 ```ruby
 test "user authentication" do
   user = create :user
 
-  assert {
+  assert! {
     assert_valid? login
   }.to change { Session.count }.by(1)
 end
