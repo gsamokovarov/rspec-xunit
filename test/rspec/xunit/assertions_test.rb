@@ -63,4 +63,20 @@ RSpec.case RSpec::XUnit::Assertions do
 
     assert_empty? array
   end
+
+  test 'stub' do
+    universe = Object.new
+
+    stub(universe).to receive(:answer).and_return(42)
+
+    assert_eq universe.answer, 42
+  end
+
+  test 'mock' do
+    post = Object.new
+
+    mock(post).to receive(:comments)
+
+    post.comments
+  end
 end

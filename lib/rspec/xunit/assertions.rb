@@ -77,12 +77,25 @@ module RSpec
       # Assert is an alias to `expect`. Use it when all else fails or doesn't
       # feel right. The `change` assertion with a block is a good example:
       #
-      # `assert! { block }.to change { value }`
+      # `assert! { block }.to change { value }` or
+      # `assert { block }.to change { value }`
       def assert!(value = Expectations::ExpectationTarget::UndefinedValue, &block)
         Expectations::ExpectationTarget.for(value, block)
       end
 
       alias assert assert!
+
+      # Mock is an XUnit alternative to the `expect` based mocking syntax.
+      #
+      # `mock(Post).to receive(:comments)`
+      def mock(value = Expectations::ExpectationTarget::UndefinedValue, &block)
+        Expectations::ExpectationTarget.for(value, block)
+      end
+
+      # Stub is an XUnit alternative to the `allow` based mocking syntax.
+      def stub(target)
+        RSpec::Mocks::AllowanceTarget.new(target)
+      end
 
       private
 
