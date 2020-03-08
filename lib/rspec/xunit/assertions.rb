@@ -68,36 +68,15 @@ module RSpec
         end
       end
 
-      assertion_match :be_truthy
-      assertion_match :be_falsy
-      assertion_match :be_nil
-      assertion_match :be
       assertion_match :be_a
       assertion_match :be_a, :is_a
       assertion_match :be_kind_of
       assertion_match :be_instance_of
       assertion_match :be_between
       assertion_match :be_within
-      assertion_match :contain_exactly
-      assertion_match :cover
-      assertion_match :end_with
-      assertion_match :eq
-      assertion_match :equal
-      assertion_match :eql
-      assertion_match :exist
-      assertion_match :have_attributes
-      assertion_match :include
-      assertion_match :all
-      assertion_match :match
-      assertion_match :match_array
-      assertion_match :respond_to
-      assertion_match :satisfy
-      assertion_match :start_with
-      assertion_match :throw_symbol
-      assertion_match :throw_symbol, :throw
-      assertion_match :yield_control
-      assertion_match :yield_with_no_args
-      assertion_match :yield_successive_args
+      assertion_match :be_truthy
+      assertion_match :be_falsy
+      assertion_match :be_nil
 
       assertion_match_block :change
       assertion_match_block :raise_error
@@ -115,15 +94,26 @@ module RSpec
 
       private
 
+      ASSERTION_REGEX = /^assert_(.*)$/.freeze
       ASSERTION_PREDICATE_REGEX = /^assert_(.*)\?$/.freeze
 
       def method_missing(method, *args, &block)
-        ASSERTION_PREDICATE_REGEX.match(method.to_s) do |match|
+        return if ASSERTION_PREDICATE_REGEX.match(method.to_s) do |match|
           value = args.shift
           matcher = "be_#{match[1]}"
 
           expect(value).to Matchers::BuiltIn::BePredicate.new(matcher, *args, &block)
-        end || super
+        end
+
+        return if ASSERTION_REGEX.match(method.to_s) do |match|
+          RSpec::XUnit::Assertions.module_eval do
+            assertion_match match[1]
+          end
+
+          send("assert_#{match[1]}", *args, &block)
+        end
+
+        super
       end
 
       def respond_to_missing?(method, *)
