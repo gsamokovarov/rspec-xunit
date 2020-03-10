@@ -93,8 +93,16 @@ module RSpec
 
       ASSERTION_REGEX = /^assert_(.*)$/.freeze
       ASSERTION_PREDICATE_REGEX = /^assert_(.*)\?$/.freeze
+      ASSERTION_NEGATIVE_PREDICATE_REGEX = /^assert_not_(.*)\?$/.freeze
 
       def method_missing(method, *args, &block)
+        return if ASSERTION_NEGATIVE_PREDICATE_REGEX.match(method.to_s) do |match|
+          value = args.shift
+          matcher = "be_#{match[1]}"
+
+          expect(value).to_not Matchers::BuiltIn::BePredicate.new(matcher, *args, &block)
+        end
+
         return if ASSERTION_PREDICATE_REGEX.match(method.to_s) do |match|
           value = args.shift
           matcher = "be_#{match[1]}"

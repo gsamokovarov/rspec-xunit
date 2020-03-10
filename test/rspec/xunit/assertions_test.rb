@@ -60,8 +60,10 @@ RSpec.case RSpec::XUnit::Assertions do
 
   test "assert predicates" do
     array = []
-
     assert_empty? array
+
+    array << 1
+    assert_not_empty? array
   end
 
   test "stub" do
