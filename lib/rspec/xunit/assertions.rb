@@ -84,9 +84,23 @@ module RSpec
         Expectations::ExpectationTarget.for(value, block)
       end
 
+      # Mock any instance of is an XUnit alternative to the
+      # `expect_any_instance_of` based mocking syntax.
+      #
+      # `mock_any_instance_of(Post).to receive(:comments)`
+      def mock_any_instance_of(klass)
+        RSpec::Mocks::AnyInstanceExpectationTarget.new(klass)
+      end
+
       # Stub is an XUnit alternative to the `allow` based mocking syntax.
       def stub(target)
         RSpec::Mocks::AllowanceTarget.new(target)
+      end
+
+      # Stub any instance of is an XUnit alternative to the `allow` based
+      # mocking syntax.
+      def stub_any_instance_of(klass)
+        RSpec::Mocks::AnyInstanceAllowanceTarget.new(klass)
       end
 
       private
