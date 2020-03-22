@@ -13,39 +13,37 @@ module RSpec
         #
         # - `assert_eq` roughly `expect(action).to eq(expected)`
         # - `assert_not_eq` roughly `expect(action).to_not eq(expected)`
-        def assertion_match(matcher, suffix = matcher)
-          define_method "assert_#{suffix}" do |value, *args, &block|
-            expect(value).to send(matcher, *args, &block)
-          rescue Expectations::ExpectationNotMetError => e
-            raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
-          end
-
-          define_method "assert_not_#{suffix}" do |value, *args, &block|
-            expect(value).to_not send(matcher, *args, &block)
-          rescue Expectations::ExpectationNotMetError => e
-            raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
-          end
-        end
-
-        # Assertion match block converts RSpec block matchers into XUnit
-        # friendly assertions.
         #
-        # For example, `assertion_match_block :raises, :raise_error` will
-        # generate two methods:
+        # For block expectation, `assertion_match :raises, :raise_error, block: true`
+        # will generate two methods:
         #
         # - `assert_raises` roughly `expect { bloc }.to raise_error`
         # - `assert_not_raises` roughly `expect { bloc }.to_not raise_error`
-        def assertion_match_block(matcher, suffix = matcher)
-          define_method "assert_#{suffix}" do |*args, &block|
-            expect(&block).to send(matcher, *args)
-          rescue Expectations::ExpectationNotMetError => e
-            raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
-          end
+        def assertion_match(matcher, suffix = matcher, block: false)
+          if block
+            define_method "assert_#{suffix}" do |*args, &block|
+              expect(&block).to send(matcher, *args)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
 
-          define_method "assert_not_#{suffix}" do |*args, &block|
-            expect(&block).to_not send(matcher, *args)
-          rescue Expectations::ExpectationNotMetError => e
-            raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            define_method "assert_not_#{suffix}" do |*args, &block|
+              expect(&block).to_not send(matcher, *args)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
+          else
+            define_method "assert_#{suffix}" do |value, *args, &blk|
+              expect(value).to send(matcher, *args, &blk)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
+
+            define_method "assert_not_#{suffix}" do |value, *args, &blk|
+              expect(value).to_not send(matcher, *args, &blk)
+            rescue Expectations::ExpectationNotMetError => e
+              raise e, e.message, adjust_for_better_failure_message(e.backtrace), cause: nil
+            end
           end
         end
       end
@@ -60,8 +58,8 @@ module RSpec
       assertion_match :be_between, :between
       assertion_match :be_within, :within
 
-      assertion_match_block :raise_error, :raise
-      assertion_match_block :raise_error, :raises
+      assertion_match :raise_error, :raise, block: true
+      assertion_match :raise_error, :raises, block: true
 
       # Exceptions to the block matcher rule.
       assertion_match :satisfy
@@ -129,28 +127,20 @@ module RSpec
           matcher = match[1]
 
           RSpec::XUnit::Assertions.module_eval do
-            if block.nil?
-              assertion_match matcher
-            else
-              assertion_match_block matcher
-            end
+            assertion_match matcher, block: block
           end
 
-          send "assert_not_#{match[1]}", *args, &block
+          send "assert_not_#{matcher}", *args, &block
         end
 
         return if ASSERTION_REGEX.match(method.to_s) do |match|
           matcher = match[1]
 
           RSpec::XUnit::Assertions.module_eval do
-            if block.nil?
-              assertion_match matcher
-            else
-              assertion_match_block matcher
-            end
+            assertion_match matcher, block: block
           end
 
-          send "assert_#{match[1]}", *args, &block
+          send "assert_#{matcher}", *args, &block
         end
 
         super
