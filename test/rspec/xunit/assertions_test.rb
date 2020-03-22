@@ -43,6 +43,10 @@ RSpec.case RSpec::XUnit::Assertions do
   test 'assert_change' do
     array = []
 
+    assert_not_change array, :count do
+      array.dup
+    end
+
     assert_change array, :count do
       array << 1
     end

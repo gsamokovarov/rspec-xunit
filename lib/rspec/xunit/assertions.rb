@@ -106,6 +106,7 @@ module RSpec
       private
 
       ASSERTION_REGEX = /^assert_(.*)$/.freeze
+      ASSERTION_NEGATIVE_REGEX = /^assert_not_(.*)$/.freeze
       ASSERTION_PREDICATE_REGEX = /^assert_(.*)\?$/.freeze
       ASSERTION_NEGATIVE_PREDICATE_REGEX = /^assert_not_(.*)\?$/.freeze
 
@@ -122,6 +123,20 @@ module RSpec
           matcher = "be_#{match[1]}"
 
           expect(value).to Matchers::BuiltIn::BePredicate.new(matcher, *args, &block)
+        end
+
+        return if ASSERTION_NEGATIVE_REGEX.match(method.to_s) do |match|
+          matcher = match[1]
+
+          RSpec::XUnit::Assertions.module_eval do
+            if block.nil?
+              assertion_match matcher
+            else
+              assertion_match_block matcher
+            end
+          end
+
+          send "assert_not_#{match[1]}", *args, &block
         end
 
         return if ASSERTION_REGEX.match(method.to_s) do |match|
