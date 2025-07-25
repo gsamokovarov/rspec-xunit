@@ -77,17 +77,17 @@ this in your `.rspec` file:
 The syntax offered by `rspec-xunit` should be familiar to xUnit testing
 framework users like `minitest`.
 
-You start a test case by `RSpec.case`. This is a simple alias of
+You start a test case with `RSpec.case`. This is a simple alias of
 `Rspec.describe`. You define individual tests (what you call examples in your
 past life) with the `test` macro. It is an alias of `it` and it supports all
-it's goodies, like skipping a test with `xtest`.
+its goodies, like skipping a test with `xtest`.
 
-This leaves us to at the most important change in `rspec-xunit`... You no
+This leaves us to the most important change in `rspec-xunit`... You no
 longer write **expectations** but **assertions**!
 
 ### Assertions
 
-Let's take a look at single RSpec BDD example:
+Let's take a look at a single RSpec BDD example:
 
 ```ruby
 it "validates a user can be found by email" do
@@ -112,7 +112,7 @@ end
 ```
 
 The assertions provided by `rspec-xunit` follow the pattern `assert_:matcher`,
-where `:matcher` is a name of standard RSpec matcher. This way, every matcher
+where `:matcher` is the name of a standard RSpec matcher. This way, every matcher
 you expect from RSpec is already available in `rspec-xunit`. 🎉
 
 We even support block matchers like:
@@ -138,7 +138,7 @@ end
 We have the aliases of `assert_raise` and `assert_raises` to
 `assert_raise_error` for that extra bittersweet xUnit feel. 🤤
 
-Some block-level assertions are hard to convert. Take this example,
+Some block-level assertions are complex to convert. Take this example,
 for example 😉:
 
 ```ruby
@@ -170,7 +170,7 @@ This looks suspiciously like `expect` because it is its alias! 🙄 Sometimes
 you just gotta `expect`, I mean `assert`, you know!
 
 Have you noticed the `assert_valid? login` line? We call it an assertion
-predicate! Every assertion ending in a question-mark invokes that predicate
+predicate! Every assertion ending in a question mark invokes that predicate
 method on the asserted object.
 
 ```ruby
